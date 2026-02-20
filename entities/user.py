@@ -36,4 +36,22 @@ class User:
             for row in rows 
          ]
             
-            
+    def get_user_by_account(account):
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+        sql = "SELECT id, name, curp, account, password FROM users WHERE account = %s"
+        cursor.execute(sql, (account))
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+        else:
+            return User(
+                id=row["id"],
+                name = row["name"],
+                account = row["account"],
+                password = decrypt(row["password"]), 
+                curp = decrypt(row["curp"])
+
+
+            ) 
