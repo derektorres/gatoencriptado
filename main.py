@@ -4,10 +4,14 @@ from getpass import getpass
 def register_user():
     name = input("nombre: ")
     account = input("cuenta: ")
-    curp = input("CURP: ")
-    password = getpass("Contraseña: ")
 
-    User.Insert(name, account, curp, password)
+    if User.check_account_exists(account):
+        print("La cuenta ya existe")
+    else:
+        curp = input("CURP: ")
+        password = getpass("Contraseña: ")
+
+        User.Insert(name, account, curp, password)
 
 def view_users():
     users = User.get_users()
@@ -19,26 +23,36 @@ def login():
     password = getpass("Contraseña: ")
 
     user = User.get_user_by_account(account)
-    
+        
     if user and user.password == password:
-        return True
+        return user
     else:
-        return False
+        return None
     #return if user adn user.password == pasword
+
+def add_card(id_usuario):
+    numero_tarjeta = input("ingresa el numero de la tarjeta: ")
+    banco = input("Banco: ")
+    tipo_tarjeta = input("Tipo de tarjeta: ")
+    User.add_card(numero_tarjeta, banco, tipo_tarjeta, id_usuario)
+
 
 
 if __name__ == "__main__":
     print("INICIO DE SESION")
-    if login():
-
+    usuario = login()
+    if usuario:
 
         print("seleccione una opcion del menu")
         print("1.- registrar un usuario")
         print("2.-consultar usuarios")
+        print("3.- agregar tarjetaaa")
         option = int(input())
         if option == 1:
             register_user()
         elif option == 2:
             view_users()
+        elif option == 3:
+            add_card(usuario.id)
     else:
         print("nomas nada wei")

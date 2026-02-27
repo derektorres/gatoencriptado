@@ -3,13 +3,16 @@ from security.crypto import encrypt, decrypt
 
 class User:
 
-
-    def  __init__(self, id:int,name:str, account:str, password:str, curp:str):
+    
+    def  __init__(self, id:int, name:str, account:str, password:str, curp:str, numero_tarjeta:str=None, banco:str=None, tipo_tarjeta:str=None):
         self.id = id
         self.name = name
         self.account = account
         self.password = password
         self.curp = curp
+        self.numero_tarjeta = numero_tarjeta
+        self.banco = banco
+        self.tipo_tarjeta = tipo_tarjeta
 
     def Insert(name, account, curp, password):
         connection = get_connection()
@@ -20,6 +23,33 @@ class User:
 
         sql = "INSERT INTO users (name, account, curp, password) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, (name, account, curp_encrypt, password_encrypt))
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+    def check_account_exists(account):
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+        sql = "SELECT id FROM users WHERE account = %s"
+        cursor.execute(sql, (account,))
+        
+        
+        row = cursor.fetchone()
+        
+        if row is None:
+            return False
+        else: 
+            return True
+        
+    def add_card(numero_tarjeta, banco, tipo_tarjeta, id_usuario):
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        numero_tarjeta_encriptado = encrypt(numero_tarjeta)
+
+        sql = "INSERT INTO tarjetas (numero_tarjeta, banco, tipo_tarjeta, id_usuario) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (numero_tarjeta_encriptado, banco, tipo_tarjeta, id_usuario))
         connection.commit()
 
         cursor.close()
@@ -40,7 +70,7 @@ class User:
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
         sql = "SELECT id, name, curp, account, password FROM users WHERE account = %s"
-        cursor.execute(sql, (account))
+        cursor.execute(sql, (account,))
         row = cursor.fetchone()
 
         if row is None:
@@ -52,6 +82,4 @@ class User:
                 account = row["account"],
                 password = decrypt(row["password"]), 
                 curp = decrypt(row["curp"])
-
-
-            ) 
+            )
