@@ -31,7 +31,7 @@ def login():
     #return if user adn user.password == pasword
 
 def add_card(id_usuario):
-    numero_tarjeta = input("ingresa el numero de la tarjeta: ")
+    numero_tarjeta = getpass("ingresa el numero de la tarjeta: ")
     banco = input("Banco: ")
     tipo_tarjeta = input("Tipo de tarjeta: ")
     User.add_card(numero_tarjeta, banco, tipo_tarjeta, id_usuario)

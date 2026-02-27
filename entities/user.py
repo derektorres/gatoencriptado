@@ -4,15 +4,13 @@ from security.crypto import encrypt, decrypt
 class User:
 
     
-    def  __init__(self, id:int, name:str, account:str, password:str, curp:str, numero_tarjeta:str=None, banco:str=None, tipo_tarjeta:str=None):
+    def  __init__(self, id:int, name:str, account:str, password:str, curp:str):
         self.id = id
         self.name = name
         self.account = account
         self.password = password
         self.curp = curp
-        self.numero_tarjeta = numero_tarjeta
-        self.banco = banco
-        self.tipo_tarjeta = tipo_tarjeta
+        
 
     def Insert(name, account, curp, password):
         connection = get_connection()
